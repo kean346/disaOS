@@ -1,3 +1,4 @@
+import { demoRequest } from "./demo/store";
 import {
   announceLiveData,
   announceOfflineData,
@@ -11,6 +12,7 @@ export async function api<T>(
   path: string,
   body?: unknown,
 ): Promise<T> {
+  if((import.meta as ImportMeta & {env:Record<string,string>}).env.VITE_USE_BACKEND !== "true") return demoRequest(method.toUpperCase(),path,body) as Promise<T>;
   const upperMethod = method.toUpperCase();
   const canUseSavedData = isOfflineDataRequest(upperMethod, path);
   if (upperMethod !== "GET" && !navigator.onLine) {

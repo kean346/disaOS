@@ -76,10 +76,10 @@ export function OperationsOverview() {
   });
   const max = Math.max(1, ...counts.map((x) => x.total));
   return (
-    <div class="garden-page">
+    <div class="garden-page overview-v2">
       <PageHeading
         title="Operations Overview"
-        description="Your teams, schedules and properties — all in one place."
+        description="Schedule, crew allocation and service progress."
       >
         <button class="btn" onClick={() => navigate("/reports")}>
           <ArrowUpRight size={16} /> View reports
@@ -89,48 +89,11 @@ export function OperationsOverview() {
         </button>
       </PageHeading>
       {error && <LoadState error={error} retry={retry} />}
-      <div class="overview-welcome">
-        <div class="welcome-copy">
-          <span class="welcome-kicker">
-            <span /> A LITTLE MORE ORDER. A LOT MORE GREEN.
-          </span>
-          <h2>
-            Good gardens start
-            <br />
-            with a well-planned week.
-          </h2>
-          <p>Keep every crew moving and every property cared for.</p>
-          <button onClick={() => navigate("/schedule")}>
-            Open weekly schedule <ArrowRight size={17} />
-          </button>
-        </div>
-        <div class="welcome-roster">
-          <div>
-            <CalendarDays size={18} />
-            <span>
-              {dayLabel(d.start)} — {dayLabel(d.end)}
-            </span>
-          </div>
-          <strong>
-            {m.scheduled}
-            <small>visits on the calendar</small>
-          </strong>
-          <div class="roster-mini">
-            {counts.slice(0, 5).map((x) => (
-              <div>
-                <span>{dayLabel(x.day, { weekday: "short" })}</span>
-                <i style={{ height: `${16 + (44 * x.total) / max}px` }} />
-                <b>{x.total}</b>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div class="botanical" aria-hidden="true">
-          <Leaf />
-          <Leaf />
-          <Leaf />
-        </div>
-      </div>
+      <section class="command-deck">
+        <div class="command-copy"><span class="command-eyebrow">WORKSPACE / {dayLabel(d.today,{day:'numeric',month:'long'})}</span><h2>Your operations,<br/><span>in perspective.</span></h2><p>Review the schedule, allocate your crews,<br/>and keep every visit on track.</p><div class="command-actions"><button class="btn btn-primary" onClick={()=>navigate('/schedule')}>Open schedule <ArrowUpRight size={17}/></button><button class="btn" onClick={()=>navigate('/crew')}>Crew workspace <Users size={16}/></button></div><div class="command-footnote"><span/> FICTIONAL WORKSPACE · YOUR CHANGES STAY IN THIS BROWSER</div></div>
+        <div class="orbit-panel"><div class="orbit-caption"><span>WEEKLY COMPLETION</span><ArrowUpRight size={18}/></div><div class="momentum-ring" style={{'--progress':`${m.scheduled?m.completed/m.scheduled*360:0}deg`}}><div><strong>{m.scheduled?Math.round(m.completed/m.scheduled*100):0}<small>%</small></strong><span>visits complete</span></div></div><div class="momentum-counts"><span><b>{m.completed}</b> completed</span><span><b>{m.scheduled-m.completed}</b> remaining</span></div><div class="orbit-label">Scheduled visits · current week</div></div>
+      </section>
+      <section class="today-strip"><div><span class="today-dot"/><strong>Today at a glance</strong><small>{today.length} garden visits</small></div>{active.map((c:any)=>{const assigned=today.filter((j:any)=>j.technician_id===c.id);return <button onClick={()=>navigate('/crew?crew='+c.id)}><span class="mini-avatar" style={{background:c.color}}>{c.name[0]}</span><span><strong>{c.name}</strong><small>{assigned.length} visits · {assigned.filter((j:any)=>j.status==='completed').length} done</small></span><ArrowUpRight size={15}/></button>;})}</section>
       {!d.demo && d.properties_total === 0 && (
         <section class="garden-panel demo-invite">
           <div>
@@ -267,7 +230,7 @@ export function OperationsOverview() {
           <h2>
             Today’s crews <span class="count-chip">{active.length}</span>
           </h2>
-          <p>Small teams. Beautiful results.</p>
+          <p>Assignments and completion for today.</p>
         </div>
         <button class="text-button" onClick={() => navigate("/dispatch")}>
           Crew dispatch <ArrowRight size={15} />

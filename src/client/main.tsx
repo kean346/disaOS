@@ -1,9 +1,10 @@
 import { render } from "preact";
-import { App } from "./app";
+import { Startup } from "./startup";
 import { prepareOfflineSupport } from "./offline";
 import "./tokens.css";
 import "./styles.css";
 import "./garden.css";
+import "./studio.css";
 
 void prepareOfflineSupport();
-render(<App />, document.getElementById("app")!);
+render(<Startup />, document.getElementById("app")!);

@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { useApp } from "../context";
 import {
   Leaf,
@@ -30,6 +30,9 @@ const items = [
 ] as const;
 export function Sidebar({ currentView }: { currentView: View }) {
   const { navigate } = useApp();
+  const navRef=useRef<HTMLElement>(null);
+  const [indicator,setIndicator]=useState({left:0,width:0});
+  useEffect(()=>{const nav=navRef.current;if(!nav)return;const update=()=>{const active=nav.querySelector<HTMLElement>('[aria-current="page"]');if(active)setIndicator({left:active.offsetLeft,width:active.offsetWidth});else setIndicator({left:0,width:0});};update();const observer=new ResizeObserver(update);observer.observe(nav);document.fonts.ready.then(update);return()=>observer.disconnect();},[currentView]);
   const [collapsed, setCollapsed] = useState(false);
   return (
     <aside class={`garden-sidebar ${collapsed ? "compact" : ""}`}>
@@ -51,10 +54,11 @@ export function Sidebar({ currentView }: { currentView: View }) {
           <PanelLeft size={16} />
         </button>
       </div>
+      <button class="nav-crew-shortcut" onClick={()=>navigate("/crew")}><Users size={15}/> Crew workspace <ArrowUpRight size={13}/></button>
       <div class="workspace-label">
         <span class="workspace-dot" /> Disa Tuine <small>PRETORIA</small>
       </div>
-      <nav aria-label="Main navigation">
+      <nav ref={navRef} aria-label="Main navigation"><span class="nav-active-indicator" aria-hidden="true" style={{left:indicator.left,width:indicator.width}}/>
         <div class="nav-caption">WORKSPACE</div>
         {items.map(([view, path, label, Icon]) => (
           <a

@@ -3,15 +3,15 @@ version: alpha
 name: Disa GardenOS
 description: A garden operations desk for Pretoria office teams and mobile crews.
 colors:
-  primary: "#183D2D"
-  pine: "#102A20"
-  sage: "#9AAF98"
-  lime: "#D6E7A5"
-  background: "#F7F8F3"
+  primary: "#3456DB"
+  pine: "#171A29"
+  sage: "#A9B6F5"
+  lime: "#DCE4FF"
+  background: "#F4F5F9"
   surface: "#FFFFFF"
-  border: "#E7EAE4"
-  text: "#202722"
-  secondary: "#626D64"
+  border: "#E3E5EF"
+  text: "#222535"
+  secondary: "#687087"
 typography:
   sans:
     fontFamily: "Jakarta, Arial, sans-serif"
@@ -68,3 +68,19 @@ Buttons use forest solid for commit, outlined neutral for secondary, explicit da
 - Do preserve original record identifiers and API relationships.
 - Don't imply synchronization, weather, travel optimization, payments processing, or sign-off integrations.
 - Don't remove inventory, equipment, offline reads or existing CRUD access.
+
+## Studio direction — revised user brief
+
+The user rejected the original green sidebar/dashboard composition. The current direction uses ink navigation across the top, cobalt primary actions, pale periwinkle working surfaces, apricot quotation accents and violet dispatch accents. The signature is the asymmetric command deck and completion ring, with today’s crew strip above metrics. Jakarta remains the heading/body family; compact uppercase utility captions structure the canvas. Motion uses 550ms staggered section reveals, chart growth and a single ring entrance; reduced-motion disables every animation. Runtime tokens live in tokens.css; studio.css implements the approved shell and composition. Tremor’s GitHub README was reviewed for dashboard/data-display references; motion.dev examples could not be reached. No third-party template code was copied. Browser-only fictional data is the default; changes persist locally, no database is required.
+
+## Glass refinement — user image reference
+
+The latest supplied reference replaces the expressive cobalt presentation with a restrained dark-glass header and translucent pale cards. Remove ornamental slogans, dotted backdrops, repeated arrows and metric icons. Use fine white borders, subtle inner highlights, bounded backdrop blur and soft shadows. Preserve functional icons, status labels and explicit actions. Operational text remains darker than decorative chrome for readability. No emoji assets are used. Motion stays brief and respects reduced motion. studio.css owns this refinement over the existing shared runtime tokens.
+
+## Startup motion
+
+Once per page load, a restrained ink wordmark dissolves while navigation, the command deck and KPI cards reveal in a short stagger. App/data initialization happens underneath; the reveal never blocks pointer input or waits on a timer to load data. A 950ms fallback removes the decorative layer if animation events are unavailable. Reduced-motion skips the intro entirely; changing that preference during the reveal dismisses it. Route changes and ordinary refreshes do not replay the startup sequence.
+
+## Navigation and route motion
+
+The navigation is a slim glass dock with a measured active-tab indicator that slides between links. A ResizeObserver and font-ready measurement keep its position correct as geometry changes. Mobile tabs retain horizontal scrolling and a 44px target. Each keyed route owns its entry: headings fade up, cards stagger by up to 225ms, numerical values reveal without changing their real values, and progress bars grow from their recorded values. No fabricated counting or artificial data delay is introduced. Reduced-motion disables the indicator transition and route animations.

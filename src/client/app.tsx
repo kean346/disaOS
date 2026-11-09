@@ -219,7 +219,7 @@ export function App() {
           {appState.loading ? (
             <div class="loading-text">Loading...</div>
           ) : (
-            <div key={view + String(id)}>{renderMain()}</div>
+            <div class="route-reveal" key={view + String(id)}>{renderMain()}</div>
           )}
         </main>
       </div>

@@ -1,3 +1,11 @@
+# Current demo mode
+
+The app now defaults to fictional browser-only data. Run `node_modules/.bin/vite` or build with `node_modules/.bin/vite build` and serve `dist` with an SPA fallback. No database or API server is needed. Demo edits and compressed photos are saved in localStorage under `disa-browser-demo-v1`; clearing browser storage removes them. Settings resets the fictional dataset. To explicitly use the existing backend, build with `VITE_USE_BACKEND=true`. The backend implementation is retained for later use.
+
+The visual direction is now ink/cobalt with apricot/violet accents, horizontal navigation and an animated command deck. Earlier validation notes below describe the previous backend build, not the new default browser adapter.
+
+---
+
 # Disa GardenOS
 
 An independent paceIT concept for Disa Tuine, built directly on the imported OpenFieldService application. All supplied customers, addresses, prices, visits and receipts are fictional. Required upstream MIT attribution remains in LICENSE. The locally hosted Plus Jakarta Sans font includes its OFL licence in public/fonts/OFL.txt.

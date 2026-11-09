@@ -26,3 +26,6 @@ List/detail links remain bookmarkable; browser Back works. Existing source list 
 ## Migration ledger
 
 Original CRUD retained. Shared tokens and shell migrate first; garden screens reuse existing jobs, customers, sites, technicians, invoices and checklists. Equipment/inventory remain available from Services/Settings. MIT license retained. Test existing core plus full garden workflow; document any unverified production capability.
+
+## Browser-only demo override
+The user explicitly selected no database. api.ts routes requests to demo/store.ts by default; VITE_USE_BACKEND=true opts into the retained server. Fictional seed data loads immediately and mutations persist in this browser’s localStorage. This is a local concept with no shared synchronization or real financial processing. The shared Field, dialog, toast and native date/select owners remain unchanged.
