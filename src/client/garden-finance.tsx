@@ -1,3 +1,4 @@
+import { CountUp } from "./animated-data";
 import { useEffect, useState } from "preact/hooks";
 import {
   Plus,
@@ -507,7 +508,7 @@ export function Reports() {
         ].map(([label, value]) => (
           <div class="garden-kpi">
             <span>{label}</span>
-            <strong>{value}</strong>
+            <strong>{typeof value==="number"?<CountUp value={value}/>:String(value).endsWith("%")?<CountUp value={parseFloat(String(value))} suffix="%"/>:label==="Recorded revenue · all time"?<CountUp value={m.revenue_cents/100} format={zar}/>:value}</strong>
           </div>
         ))}
       </div>

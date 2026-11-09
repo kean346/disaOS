@@ -1,3 +1,4 @@
+import { CountUp, GrowingBar, CompletionRing } from "./animated-data";
 import { useEffect, useState } from "preact/hooks";
 import {
   ArrowUpRight,
@@ -91,7 +92,7 @@ export function OperationsOverview() {
       {error && <LoadState error={error} retry={retry} />}
       <section class="command-deck">
         <div class="command-copy"><span class="command-eyebrow">WORKSPACE / {dayLabel(d.today,{day:'numeric',month:'long'})}</span><h2>Your operations,<br/><span>in perspective.</span></h2><p>Review the schedule, allocate your crews,<br/>and keep every visit on track.</p><div class="command-actions"><button class="btn btn-primary" onClick={()=>navigate('/schedule')}>Open schedule <ArrowUpRight size={17}/></button><button class="btn" onClick={()=>navigate('/crew')}>Crew workspace <Users size={16}/></button></div><div class="command-footnote"><span/> FICTIONAL WORKSPACE · YOUR CHANGES STAY IN THIS BROWSER</div></div>
-        <div class="orbit-panel"><div class="orbit-caption"><span>WEEKLY COMPLETION</span><ArrowUpRight size={18}/></div><div class="momentum-ring" style={{'--progress':`${m.scheduled?m.completed/m.scheduled*360:0}deg`}}><div><strong>{m.scheduled?Math.round(m.completed/m.scheduled*100):0}<small>%</small></strong><span>visits complete</span></div></div><div class="momentum-counts"><span><b>{m.completed}</b> completed</span><span><b>{m.scheduled-m.completed}</b> remaining</span></div><div class="orbit-label">Scheduled visits · current week</div></div>
+        <div class="orbit-panel"><div class="orbit-caption"><span>WEEKLY COMPLETION</span><ArrowUpRight size={18}/></div><CompletionRing percent={m.scheduled?m.completed/m.scheduled*100:0}/><div class="momentum-counts"><span><b><CountUp value={m.completed}/></b> completed</span><span><b><CountUp value={m.scheduled-m.completed}/></b> remaining</span></div><div class="orbit-label">Scheduled visits · current week</div></div>
       </section>
       <section class="today-strip"><div><span class="today-dot"/><strong>Today at a glance</strong><small>{today.length} garden visits</small></div>{active.map((c:any)=>{const assigned=today.filter((j:any)=>j.technician_id===c.id);return <button onClick={()=>navigate('/crew?crew='+c.id)}><span class="mini-avatar" style={{background:c.color}}>{c.name[0]}</span><span><strong>{c.name}</strong><small>{assigned.length} visits · {assigned.filter((j:any)=>j.status==='completed').length} done</small></span><ArrowUpRight size={15}/></button>;})}</section>
       {!d.demo && d.properties_total === 0 && (
@@ -133,7 +134,7 @@ export function OperationsOverview() {
               <Icon size={17} />
               <ArrowUpRight size={13} />
             </div>
-            <strong>{value}</strong>
+            <strong><CountUp value={Number(value)}/></strong>
             <span>{label}</span>
           </button>
         ))}
@@ -157,7 +158,7 @@ export function OperationsOverview() {
               <i /> Completed
             </span>
             <strong>
-              {m.scheduled ? Math.round((m.completed / m.scheduled) * 100) : 0}%
+              <CountUp value={m.scheduled ? m.completed / m.scheduled * 100 : 0} suffix="%"/>
               completion
             </strong>
           </div>
@@ -177,8 +178,8 @@ export function OperationsOverview() {
                   class="bar-pair"
                   title={`${dayLabel(x.day)}: ${x.total} scheduled, ${x.done} completed`}
                 >
-                  <span style={{ height: `${(x.total / max) * 100}%` }} />
-                  <span style={{ height: `${(x.done / max) * 100}%` }} />
+                  <GrowingBar vertical percent={x.total/max*100}/>
+                  <GrowingBar vertical percent={x.done/max*100}/>
                 </div>
                 <span>{dayLabel(x.day, { weekday: "short" })}</span>
               </div>
@@ -263,25 +264,20 @@ export function OperationsOverview() {
                 </div>
                 <div class="crew-numbers">
                   <span>
-                    <b>{jobs.length}</b> assigned
+                    <b><CountUp value={jobs.length}/></b> assigned
                   </span>
                   <span>
-                    <b>{done}</b> completed
+                    <b><CountUp value={done}/></b> completed
                   </span>
                   <span>
-                    <b>{jobs.length - done}</b> remaining
+                    <b><CountUp value={jobs.length-done}/></b> remaining
                   </span>
                 </div>
                 <div class="garden-progress">
-                  <i
-                    style={{
-                      width: `${jobs.length ? (done / jobs.length) * 100 : 0}%`,
-                      background: c.color,
-                    }}
-                  />
+                  <GrowingBar percent={jobs.length?done/jobs.length*100:0} color={c.color}/>
                 </div>
                 <small>
-                  {jobs.length ? Math.round((done / jobs.length) * 100) : 0}% of
+                  <CountUp value={jobs.length?done/jobs.length*100:0} suffix="%"/> of
                   today’s visits complete
                 </small>
               </button>

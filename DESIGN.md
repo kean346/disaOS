@@ -84,3 +84,7 @@ Once per page load, a restrained ink wordmark dissolves while navigation, the co
 ## Navigation and route motion
 
 The navigation is a slim glass dock with a measured active-tab indicator that slides between links. A ResizeObserver and font-ready measurement keep its position correct as geometry changes. Mobile tabs retain horizontal scrolling and a 44px target. Each keyed route owns its entry: headings fade up, cards stagger by up to 225ms, numerical values reveal without changing their real values, and progress bars grow from their recorded values. No fabricated counting or artificial data delay is introduced. Reduced-motion disables the indicator transition and route animations.
+
+## Actual data interpolation
+
+Shared CountUp, GrowingBar and CompletionRing components now interpolate displayed values from zero to the recorded target over 1.5 seconds with cubic ease-out. IntersectionObserver starts them only when visible, and requestAnimationFrame waits for the startup veil to leave so the animation is not hidden behind the intro. The final value remains the accessible label; no live announcements fire every frame. Reduced motion shows final values immediately and changing that preference mid-animation finishes immediately. Effects cancel animation frames and observers on unmount. Route remounts replay them; no source data is modified.
