@@ -648,7 +648,7 @@ export function GardenSettings() {
               <dt>VAT</dt>
               <dd>Configurable per quote or invoice</dd>
               <dt>Data storage</dt>
-              <dd>Local SQLite / D1</dd>
+              <dd>This browser only · fictional demo data</dd>
             </dl>
             <p class="field-help">
               This concept has no sign-in, crew permissions, live weather, GPS
@@ -677,11 +677,6 @@ export function GardenSettings() {
                 "Service catalogue",
                 "Configurable services and pricing",
                 "/services",
-              ],
-              [
-                "Inventory & materials",
-                "Stock and visit materials",
-                "/materials",
               ],
             ].map(([title, text, path]) => (
               <button onClick={() => navigate(path)}>

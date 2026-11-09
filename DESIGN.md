@@ -88,3 +88,7 @@ The navigation is a slim glass dock with a measured active-tab indicator that sl
 ## Actual data interpolation
 
 Shared CountUp, GrowingBar and CompletionRing components now interpolate displayed values from zero to the recorded target over 1.5 seconds with cubic ease-out. IntersectionObserver starts them only when visible, and requestAnimationFrame waits for the startup veil to leave so the animation is not hidden behind the intro. The final value remains the accessible label; no live announcements fire every frame. Reduced motion shows final values immediately and changing that preference mid-animation finishes immediately. Effects cancel animation frames and observers on unmount. Route remounts replay them; no source data is modified.
+
+## Disa Tuine demo scope
+
+The user-provided website text is now the business-content source: established 1988, weekly residential garden maintenance in Magalieskruin, Wonderboom, Annlin and Doornpoort, and free on-site quote consultations. Core services are weekly garden service, lawn mowing/edging, flower bed maintenance, basic pruning and debris removal. Do not invent official pricing or operational processes. Main navigation is Overview, Weekly Schedule, Crews, Properties, Enquiries & Quotes, Services and Settings. The overview uses four KPIs and one today-crew summary. Billing, reports, inventory and equipment are not promoted as confirmed requirements. Retained implementation can be evaluated later; the demo remains browser-only and fictional. Preserve the glass styling and visibility-aware count-up animations.

@@ -19,12 +19,9 @@ import type { View } from "../types";
 const items = [
   ["dashboard", "/", "Overview", LayoutDashboard],
   ["schedule", "/schedule", "Weekly Schedule", CalendarDays],
-  ["dispatch", "/dispatch", "Crew Dispatch", Users],
-  ["jobs", "/jobs", "Garden Visits", Sprout],
-  ["properties", "/properties", "Properties & Clients", MapPin],
-  ["quotes", "/quotes", "Quotations", FileText],
-  ["invoices", "/invoices", "Invoices", Receipt],
-  ["reports", "/reports", "Reports", ChartNoAxesCombined],
+  ["dispatch", "/dispatch", "Crews", Users],
+  ["properties", "/properties", "Properties", MapPin],
+  ["quotes", "/quotes", "Enquiries & Quotes", FileText],
   ["services", "/services", "Services", Leaf],
   ["settings", "/settings", "Settings", Settings],
 ] as const;

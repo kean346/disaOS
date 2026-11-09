@@ -52,16 +52,9 @@ export function OperationsOverview() {
   const active = d.crews.filter((c: any) => c.active);
   const cards = [
     ["This week’s visits", m.scheduled, CalendarDays, "/schedule"],
-    ["Completed visits", m.completed, CircleCheck, "/reports"],
+    ["Completed visits", m.completed, CircleCheck, "/schedule"],
     ["Active crews", active.length, Users, "/dispatch"],
-    [
-      "Visits remaining",
-      Math.max(0, m.scheduled - m.completed),
-      Clock,
-      "/jobs",
-    ],
-    ["Pending quotes", m.pending_quotes, FileText, "/quotes"],
-    ["Outstanding invoices", m.outstanding_invoices, Receipt, "/invoices"],
+    ["Quote enquiries", m.pending_quotes, FileText, "/quotes"],
   ] as const;
   const counts = Array.from({ length: 7 }, (_, i) => {
     const day = addDays(d.start, i);
@@ -79,19 +72,16 @@ export function OperationsOverview() {
   return (
     <div class="garden-page overview-v2">
       <PageHeading
-        title="Operations Overview"
-        description="Schedule, crew allocation and service progress."
+        title="Your week at Disa Tuine"
+        description="Weekly garden care across Pretoria’s North and North-Eastern suburbs."
       >
-        <button class="btn" onClick={() => navigate("/reports")}>
-          <ArrowUpRight size={16} /> View reports
-        </button>
         <button class="btn btn-primary" onClick={() => setCreate(true)}>
           <Plus size={16} /> Schedule visit
         </button>
       </PageHeading>
       {error && <LoadState error={error} retry={retry} />}
       <section class="command-deck">
-        <div class="command-copy"><span class="command-eyebrow">WORKSPACE / {dayLabel(d.today,{day:'numeric',month:'long'})}</span><h2>Your operations,<br/><span>in perspective.</span></h2><p>Review the schedule, allocate your crews,<br/>and keep every visit on track.</p><div class="command-actions"><button class="btn btn-primary" onClick={()=>navigate('/schedule')}>Open schedule <ArrowUpRight size={17}/></button><button class="btn" onClick={()=>navigate('/crew')}>Crew workspace <Users size={16}/></button></div><div class="command-footnote"><span/> FICTIONAL WORKSPACE · YOUR CHANGES STAY IN THIS BROWSER</div></div>
+        <div class="command-copy"><span class="command-eyebrow">WORKSPACE / {dayLabel(d.today,{day:'numeric',month:'long'})}</span><h2>Reliable care.<br/><span>Every week.</span></h2><p>Weekly maintenance, lawn care and tidy gardens.<br/>Serving Pretoria since 1988.</p><div class="command-actions"><button class="btn btn-primary" onClick={()=>navigate('/schedule')}>Open schedule <ArrowUpRight size={17}/></button><button class="btn" onClick={()=>navigate('/crew')}>Crew workspace <Users size={16}/></button></div><div class="command-footnote"><span/> FICTIONAL WORKSPACE · YOUR CHANGES STAY IN THIS BROWSER</div></div>
         <div class="orbit-panel"><div class="orbit-caption"><span>WEEKLY COMPLETION</span><ArrowUpRight size={18}/></div><CompletionRing percent={m.scheduled?m.completed/m.scheduled*100:0}/><div class="momentum-counts"><span><b><CountUp value={m.completed}/></b> completed</span><span><b><CountUp value={m.scheduled-m.completed}/></b> remaining</span></div><div class="orbit-label">Scheduled visits · current week</div></div>
       </section>
       <section class="today-strip"><div><span class="today-dot"/><strong>Today at a glance</strong><small>{today.length} garden visits</small></div>{active.map((c:any)=>{const assigned=today.filter((j:any)=>j.technician_id===c.id);return <button onClick={()=>navigate('/crew?crew='+c.id)}><span class="mini-avatar" style={{background:c.color}}>{c.name[0]}</span><span><strong>{c.name}</strong><small>{assigned.length} visits · {assigned.filter((j:any)=>j.status==='completed').length} done</small></span><ArrowUpRight size={15}/></button>;})}</section>
@@ -204,15 +194,9 @@ export function OperationsOverview() {
             [m.overdue, "Overdue visits", "Review & reschedule", "/schedule"],
             [
               m.pending_quotes,
-              "Pending quotations",
-              "Keep conversations moving",
+              "Quote enquiries",
+              "Arrange a free on-site consultation",
               "/quotes",
-            ],
-            [
-              m.outstanding_invoices,
-              "Outstanding invoices",
-              "Review balances",
-              "/invoices",
             ],
           ].map(([count, title, sub, path]) => (
             <button class="action-row" onClick={() => navigate(String(path))}>
@@ -225,70 +209,6 @@ export function OperationsOverview() {
             </button>
           ))}
         </section>
-      </div>
-      <div class="panel-heading outside">
-        <div>
-          <h2>
-            Today’s crews <span class="count-chip">{active.length}</span>
-          </h2>
-          <p>Assignments and completion for today.</p>
-        </div>
-        <button class="text-button" onClick={() => navigate("/dispatch")}>
-          Crew dispatch <ArrowRight size={15} />
-        </button>
-      </div>
-      <div class="crew-cards">
-        {active.length ? (
-          active.map((c: any, i: number) => {
-            const jobs = today.filter((j: any) => j.technician_id === c.id),
-              done = jobs.filter((j: any) => j.status === "completed").length;
-            return (
-              <button
-                class="crew-card"
-                onClick={() => navigate("/crew?crew=" + c.id)}
-              >
-                <div class="crew-card-top">
-                  <span class="crew-avatar" style={{ "--crew": c.color }}>
-                    {c.name.slice(0, 1)}
-                    <Leaf size={17} />
-                  </span>
-                  <span>
-                    <strong>{c.name}</strong>
-                    <small>
-                      {jobs.length
-                        ? "Out in the gardens"
-                        : "Ready for assignments"}
-                    </small>
-                  </span>
-                  <ArrowUpRight size={16} />
-                </div>
-                <div class="crew-numbers">
-                  <span>
-                    <b><CountUp value={jobs.length}/></b> assigned
-                  </span>
-                  <span>
-                    <b><CountUp value={done}/></b> completed
-                  </span>
-                  <span>
-                    <b><CountUp value={jobs.length-done}/></b> remaining
-                  </span>
-                </div>
-                <div class="garden-progress">
-                  <GrowingBar percent={jobs.length?done/jobs.length*100:0} color={c.color}/>
-                </div>
-                <small>
-                  <CountUp value={jobs.length?done/jobs.length*100:0} suffix="%"/> of
-                  today’s visits complete
-                </small>
-              </button>
-            );
-          })
-        ) : (
-          <Empty
-            title="No crews yet"
-            text="Add crews in Settings to start assigning visits."
-          />
-        )}
       </div>
       <div class="overview-grid lower">
         <section class="garden-panel">

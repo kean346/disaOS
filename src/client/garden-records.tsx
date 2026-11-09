@@ -220,8 +220,8 @@ function PropertyDetail({ id }: { id: string }) {
           <strong>{records.length}</strong>
         </div>
         <div>
-          <small>Linked invoices</small>
-          <strong>{invoices.length}</strong>
+          <small>Quote enquiries</small>
+          <strong>{quotes.length}</strong>
         </div>
       </div>
       <div class="overview-grid">
@@ -349,24 +349,6 @@ function PropertyDetail({ id }: { id: string }) {
             </button>
           ))}
           {!quotes.length && <Empty title="No quotations recorded" />}
-        </section>
-        <section class="garden-panel">
-          <div class="panel-heading">
-            <h2>Billing history</h2>
-          </div>
-          {invoices.map((i: any) => (
-            <button
-              class="billing-row"
-              onClick={() => navigate("/invoices/" + i.id)}
-            >
-              <span>
-                {i.identifier}
-                <small>{i.status}</small>
-              </span>
-              <b>{zar(i.total)}</b>
-            </button>
-          ))}
-          {!invoices.length && <Empty title="No invoices recorded" />}
         </section>
       </div>
       {edit && <PropertyForm initial={p} onClose={() => setEdit(false)} />}
@@ -816,8 +798,8 @@ export function Quotations() {
   return (
     <div class="garden-page">
       <PageHeading
-        title="Quotations & enquiries"
-        description="From the first conversation to the first garden visit."
+        title="Enquiries & quotes"
+        description="Arrange a free on-site consultation and prepare a garden service quote."
       >
         <button class="btn btn-primary" onClick={() => setCreate(true)}>
           <Plus size={16} /> New quotation / enquiry
