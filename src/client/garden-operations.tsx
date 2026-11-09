@@ -75,6 +75,7 @@ export function OperationsOverview() {
         title="Your week at Disa Tuine"
         description="Weekly garden care across Pretoria’s North and North-Eastern suburbs."
       >
+        <button class="btn replay-motion" onClick={()=>{sessionStorage.setItem('disa-motion','play');document.documentElement.dataset.demoMotion='play';window.dispatchEvent(new Event('disa:replay-motion'));}}><RotateCw size={14}/> Replay animations</button>
         <button class="btn btn-primary" onClick={() => setCreate(true)}>
           <Plus size={16} /> Schedule visit
         </button>

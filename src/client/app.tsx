@@ -34,6 +34,8 @@ export function App() {
 
   const { view, id, navigate } = useRouter();
   const appState = useAppState(isAgent, navigate);
+  const [motionRun,setMotionRun]=useState(0);
+  useEffect(()=>{const replay=()=>setMotionRun(n=>n+1);window.addEventListener('disa:replay-motion',replay);return()=>window.removeEventListener('disa:replay-motion',replay);},[]);
   const [globalSearch, setGlobalSearch] = useState("");
   useEffect(() => {
     document.title = `${view === "dashboard" ? "Operations Overview" : view.charAt(0).toUpperCase() + view.slice(1)} · Disa GardenOS`;
@@ -219,7 +221,7 @@ export function App() {
           {appState.loading ? (
             <div class="loading-text">Loading...</div>
           ) : (
-            <div class="route-reveal" key={view + String(id)}>{renderMain()}</div>
+            <div class="route-reveal" key={view + String(id)+String(motionRun)}>{renderMain()}</div>
           )}
         </main>
       </div>
