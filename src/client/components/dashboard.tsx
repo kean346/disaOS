@@ -1,12 +1,23 @@
 import { StatusBadge } from "./status-badge";
 import { useApp } from "../context";
-import { Briefcase, Users, CalendarCheck, DollarSign, Clock, CheckCircle, FileText, AlertCircle } from "lucide-preact";
+import {
+  Briefcase,
+  Users,
+  CalendarCheck,
+  DollarSign,
+  Clock,
+  CheckCircle,
+  FileText,
+  AlertCircle,
+} from "lucide-preact";
 
 export function Dashboard() {
   const { stats, navigate, jobs } = useApp();
 
   const todayStr = new Date().toISOString().split("T")[0];
-  const todayJobs = jobs.filter((j) => j.scheduled_date === todayStr && j.status !== "cancelled");
+  const todayJobs = jobs.filter(
+    (j) => j.scheduled_date === todayStr && j.status !== "cancelled",
+  );
 
   return (
     <div class="page">
@@ -65,7 +76,7 @@ export function Dashboard() {
             <DollarSign size={20} />
           </div>
           <div class="stat-info">
-            <div class="stat-value">${stats.revenue.toLocaleString()}</div>
+            <div class="stat-value">R {stats.revenue.toLocaleString()}</div>
             <div class="stat-label">Revenue</div>
           </div>
         </div>
@@ -107,14 +118,33 @@ export function Dashboard() {
               </thead>
               <tbody>
                 {todayJobs.map((job) => (
-                  <tr key={job.id} class="table-row clickable" onClick={() => navigate(`/jobs/${job.id}`)}>
+                  <tr key={job.id} class="table-row">
                     <td class="text-muted">{job.scheduled_time}</td>
-                    <td><span class="identifier">{job.identifier}</span></td>
+                    <td>
+                      <button
+                        class="record-link"
+                        onClick={() => navigate(`/jobs/${job.id}`)}
+                      >
+                        <span class="identifier">{job.identifier}</span>
+                      </button>
+                    </td>
                     <td>{job.customer_name}</td>
                     <td>
                       {job.technician_name ? (
-                        <span class="tech-pill" style={{ borderColor: job.technician_color || "var(--text-muted)" }}>
-                          <span class="tech-dot" style={{ background: job.technician_color || "var(--text-muted)" }} />
+                        <span
+                          class="tech-pill"
+                          style={{
+                            borderColor:
+                              job.technician_color || "var(--text-muted)",
+                          }}
+                        >
+                          <span
+                            class="tech-dot"
+                            style={{
+                              background:
+                                job.technician_color || "var(--text-muted)",
+                            }}
+                          />
                           {job.technician_name}
                         </span>
                       ) : (

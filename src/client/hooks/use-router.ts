@@ -7,29 +7,37 @@ export interface RouteState {
 }
 
 const VIEW_ROUTES: Record<string, View> = {
+  dispatch: "dispatch",
+  properties: "properties",
+  quotes: "quotes",
+  reports: "reports",
+  settings: "settings",
+  crew: "crew",
   "": "dashboard",
-  "dashboard": "dashboard",
-  "schedule": "schedule",
-  "jobs": "jobs",
-  "customers": "customers",
-  "assets": "assets",
-  "technicians": "technicians",
-  "services": "services",
-  "invoices": "invoices",
-  "materials": "materials",
+  dashboard: "dashboard",
+  schedule: "schedule",
+  jobs: "jobs",
+  customers: "customers",
+  assets: "assets",
+  technicians: "technicians",
+  services: "services",
+  invoices: "invoices",
+  materials: "materials",
 };
 
 function parseRoute(path: string): RouteState {
   const clean = path.replace(/^\/+|\/+$/g, "");
   const segments = clean.split("/");
   const viewKey = segments[0] || "";
-  const view = VIEW_ROUTES[viewKey] || "dashboard";
+  const view = VIEW_ROUTES[viewKey] || "notfound";
   const id = segments[1] || null;
   return { view, id };
 }
 
 export function useRouter() {
-  const [route, setRoute] = useState<RouteState>(() => parseRoute(window.location.pathname));
+  const [route, setRoute] = useState<RouteState>(() =>
+    parseRoute(window.location.pathname),
+  );
 
   const navigate = useCallback((to: string) => {
     window.history.pushState(null, "", to);

@@ -14,8 +14,14 @@ const STATUSES: { value: string; label: string }[] = [
 
 export function InvoiceList() {
   const {
-    invoices, invoicesPag, setInvoicesPage, invoicesStatusFilter, setInvoicesStatusFilter,
-    navigate, deleteInvoice, isAgent,
+    invoices,
+    invoicesPag,
+    setInvoicesPage,
+    invoicesStatusFilter,
+    setInvoicesStatusFilter,
+    navigate,
+    deleteInvoice,
+    isAgent,
   } = useApp();
 
   return (
@@ -60,18 +66,33 @@ export function InvoiceList() {
             <tbody>
               {invoices.map((inv) => {
                 return (
-                  <tr key={inv.id} class="table-row clickable" onClick={() => navigate(`/invoices/${inv.id}`)}>
-                    <td><span class="identifier">{inv.identifier}</span></td>
+                  <tr key={inv.id} class="table-row">
+                    <td>
+                      <button
+                        class="record-link"
+                        onClick={() => navigate(`/invoices/${inv.id}`)}
+                      >
+                        <span class="identifier">{inv.identifier}</span>
+                      </button>
+                    </td>
                     <td>{inv.customer_name || "—"}</td>
                     <td class="text-muted">{inv.job_identifier || "—"}</td>
                     <td>
                       <StatusBadge status={inv.status} />
                     </td>
                     <td class="text-muted">{inv.due_date || "—"}</td>
-                    <td class="text-bold text-right">${inv.total.toFixed(2)}</td>
+                    <td class="text-bold text-right">
+                      R {inv.total.toFixed(2)}
+                    </td>
                     {isAgent && (
                       <td>
-                        <button class="btn-icon danger" onClick={(e) => { e.stopPropagation(); deleteInvoice(inv.id); }}>
+                        <button
+                          class="btn-icon danger"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteInvoice(inv.id);
+                          }}
+                        >
                           <Trash2 size={14} />
                         </button>
                       </td>
@@ -80,7 +101,18 @@ export function InvoiceList() {
                 );
               })}
             </tbody>
-            <tfoot><tr><td colSpan={5}>This page · {invoices.length} invoices</td><td class="text-right">${invoices.reduce((total, invoice) => total + invoice.total, 0).toFixed(2)}</td>{isAgent && <td />}</tr></tfoot>
+            <tfoot>
+              <tr>
+                <td colSpan={5}>This page · {invoices.length} invoices</td>
+                <td class="text-right">
+                  R{" "}
+                  {invoices
+                    .reduce((total, invoice) => total + invoice.total, 0)
+                    .toFixed(2)}
+                </td>
+                {isAgent && <td />}
+              </tr>
+            </tfoot>
           </table>
         )}
       </div>

@@ -1,6 +1,23 @@
-export type View = "assets" | "dashboard" | "schedule" | "jobs" | "customers" | "technicians" | "services" | "invoices" | "materials";
+export type View =
+  | "notfound"
+  | "dispatch"
+  | "properties"
+  | "quotes"
+  | "reports"
+  | "settings"
+  | "crew"
+  | "assets"
+  | "dashboard"
+  | "schedule"
+  | "jobs"
+  | "customers"
+  | "technicians"
+  | "services"
+  | "invoices"
+  | "materials";
 
-export type JobStatus = "scheduled" | "confirmed" | "in_progress" | "completed" | "cancelled";
+export type JobStatus =
+  "scheduled" | "confirmed" | "in_progress" | "completed" | "cancelled";
 export type Priority = "low" | "normal" | "high" | "urgent";
 export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue" | "cancelled";
 

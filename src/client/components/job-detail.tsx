@@ -2,18 +2,50 @@ import { useState } from "preact/hooks";
 import { useApp } from "../context";
 import { JobEquipment } from "./asset-picker";
 import { StatusBadge, PriorityBadge } from "./status-badge";
-import { ArrowLeft, Trash2, Send, MapPin, Clock, DollarSign, User, Wrench, Plus, X, CheckSquare, Square, Package, FileText } from "lucide-preact";
+import {
+  ArrowLeft,
+  Trash2,
+  Send,
+  MapPin,
+  Clock,
+  DollarSign,
+  User,
+  Wrench,
+  Plus,
+  X,
+  CheckSquare,
+  Square,
+  Package,
+  FileText,
+} from "lucide-preact";
 import type { JobStatus } from "../types";
 import { useConnectivity } from "../hooks/use-connectivity";
 
-const ALL_STATUSES: JobStatus[] = ["scheduled", "confirmed", "in_progress", "completed", "cancelled"];
+const ALL_STATUSES: JobStatus[] = [
+  "scheduled",
+  "confirmed",
+  "in_progress",
+  "completed",
+  "cancelled",
+];
 
 export function JobDetail() {
   const {
-    selectedJob: job, navigate, updateJob, deleteJob,
-    addJobNote, deleteJobNote, technicianLookup, isAgent,
-    addChecklistItem, toggleChecklistItem, deleteChecklistItem,
-    addJobMaterial, deleteJobMaterial, materials, createInvoiceFromJob,
+    selectedJob: job,
+    navigate,
+    updateJob,
+    deleteJob,
+    addJobNote,
+    deleteJobNote,
+    technicianLookup,
+    isAgent,
+    addChecklistItem,
+    toggleChecklistItem,
+    deleteChecklistItem,
+    addJobMaterial,
+    deleteJobMaterial,
+    materials,
+    createInvoiceFromJob,
   } = useApp();
   const { readOnly } = useConnectivity();
   const [noteText, setNoteText] = useState("");
@@ -24,7 +56,8 @@ export function JobDetail() {
 
   if (!job) return null;
 
-  const handleStatusChange = (status: JobStatus) => updateJob(job.id, { status });
+  const handleStatusChange = (status: JobStatus) =>
+    updateJob(job.id, { status });
 
   const handleAddNote = async () => {
     if (!noteText.trim()) return;
@@ -53,15 +86,40 @@ export function JobDetail() {
           <ArrowLeft size={16} /> Back
         </button>
         <div class="page-header-right">
-          <button class="btn btn-primary" disabled={readOnly} onClick={() => createInvoiceFromJob(job.id)}>
-            <FileText size={14} /> Create Invoice
+          <button
+            class="btn btn-primary"
+            disabled={readOnly}
+            onClick={() => createInvoiceFromJob(job.id)}
+          >
+            <FileText size={14} /> Create invoice
           </button>
-          <button class="btn btn-danger" disabled={readOnly} onClick={() => deleteJob(job.id)}>
+          <button
+            class="btn btn-danger"
+            disabled={readOnly}
+            onClick={() => deleteJob(job.id)}
+          >
             <Trash2 size={14} /> Delete
           </button>
         </div>
       </div>
 
+      <div class="garden-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Field work & proof of service</h2>
+            <p>
+              Record tasks, completion photographs and a permanent service
+              report.
+            </p>
+          </div>
+          <button
+            class="btn btn-primary"
+            onClick={() => navigate("/crew/" + job.id)}
+          >
+            Open Crew View
+          </button>
+        </div>
+      </div>
       <div class="detail-layout">
         <div class="detail-main">
           <div class="detail-title-row">
@@ -75,7 +133,9 @@ export function JobDetail() {
               <User size={14} />
               <span class="detail-meta-label">Customer</span>
               <span>{job.customer_name || "—"}</span>
-              {job.customer_phone && <span class="text-muted">{job.customer_phone}</span>}
+              {job.customer_phone && (
+                <span class="text-muted">{job.customer_phone}</span>
+              )}
             </div>
             <div class="detail-meta-item">
               <MapPin size={14} />
@@ -85,20 +145,32 @@ export function JobDetail() {
             <div class="detail-meta-item">
               <Clock size={14} />
               <span class="detail-meta-label">Scheduled</span>
-              <span>{job.scheduled_date} at {job.scheduled_time}</span>
+              <span>
+                {job.scheduled_date} at {job.scheduled_time}
+              </span>
               <span class="text-muted">{job.duration} min</span>
             </div>
             <div class="detail-meta-item">
               <DollarSign size={14} />
               <span class="detail-meta-label">Price</span>
-              <span>${job.price.toFixed(2)}</span>
+              <span>R {job.price.toFixed(2)}</span>
             </div>
             {job.service_type_name && (
               <div class="detail-meta-item">
                 <Wrench size={14} />
                 <span class="detail-meta-label">Service</span>
-                <span class="service-pill" style={{ borderColor: job.service_type_color || "var(--text-muted)" }}>
-                  <span class="service-dot" style={{ background: job.service_type_color || "var(--text-muted)" }} />
+                <span
+                  class="service-pill"
+                  style={{
+                    borderColor: job.service_type_color || "var(--text-muted)",
+                  }}
+                >
+                  <span
+                    class="service-dot"
+                    style={{
+                      background: job.service_type_color || "var(--text-muted)",
+                    }}
+                  />
                   {job.service_type_name}
                 </span>
               </div>
@@ -107,8 +179,18 @@ export function JobDetail() {
               <User size={14} />
               <span class="detail-meta-label">Technician</span>
               {job.technician_name ? (
-                <span class="tech-pill" style={{ borderColor: job.technician_color || "var(--text-muted)" }}>
-                  <span class="tech-dot" style={{ background: job.technician_color || "var(--text-muted)" }} />
+                <span
+                  class="tech-pill"
+                  style={{
+                    borderColor: job.technician_color || "var(--text-muted)",
+                  }}
+                >
+                  <span
+                    class="tech-dot"
+                    style={{
+                      background: job.technician_color || "var(--text-muted)",
+                    }}
+                  />
                   {job.technician_name}
                 </span>
               ) : (
@@ -117,10 +199,17 @@ export function JobDetail() {
             </div>
           </div>
 
-          <section class="customer-context" aria-labelledby="customer-context-heading">
+          <section
+            class="customer-context"
+            aria-labelledby="customer-context-heading"
+          >
             <div class="customer-context-heading">
               <h3 id="customer-context-heading">Customer history</h3>
-              <button class="btn btn-sm" disabled={readOnly} onClick={() => navigate(`/customers/${job.customer_id}`)}>
+              <button
+                class="btn btn-sm"
+                disabled={readOnly}
+                onClick={() => navigate(`/customers/${job.customer_id}`)}
+              >
                 Open customer
               </button>
             </div>
@@ -131,8 +220,14 @@ export function JobDetail() {
               </div>
               <div class="customer-context-item">
                 {job.customer_last_service_id ? (
-                  <button class="customer-context-link" onClick={() => navigate(`/jobs/${job.customer_last_service_id}`)}>
-                    {job.customer_last_service_identifier} · {job.customer_last_service_date}
+                  <button
+                    class="customer-context-link"
+                    onClick={() =>
+                      navigate(`/jobs/${job.customer_last_service_id}`)
+                    }
+                  >
+                    {job.customer_last_service_identifier} ·{" "}
+                    {job.customer_last_service_date}
                   </button>
                 ) : (
                   <strong>None yet</strong>
@@ -140,7 +235,9 @@ export function JobDetail() {
                 <span>Last completed service</span>
               </div>
               <div class="customer-context-item">
-                <strong>${(job.customer_lifetime_revenue ?? 0).toFixed(2)}</strong>
+                <strong>
+                  R {(job.customer_lifetime_revenue ?? 0).toFixed(2)}
+                </strong>
                 <span>Paid invoice revenue</span>
               </div>
             </div>
@@ -157,16 +254,33 @@ export function JobDetail() {
 
           {/* Checklist */}
           <div class="detail-section">
-            <h3><CheckSquare size={16} style={{ verticalAlign: "text-bottom" }} /> Checklist</h3>
+            <h3>
+              <CheckSquare size={16} style={{ verticalAlign: "text-bottom" }} />{" "}
+              Checklist
+            </h3>
             <div class="checklist-list">
               {(job.checklist || []).map((item) => (
                 <div key={item.id} class="checklist-item">
-                  <button class="checklist-toggle" disabled={readOnly} onClick={() => toggleChecklistItem(item.id)}>
-                    {item.checked ? <CheckSquare size={16} color="var(--success)" /> : <Square size={16} />}
+                  <button
+                    class="checklist-toggle"
+                    disabled={readOnly}
+                    onClick={() => toggleChecklistItem(item.id)}
+                  >
+                    {item.checked ? (
+                      <CheckSquare size={16} color="var(--success)" />
+                    ) : (
+                      <Square size={16} />
+                    )}
                   </button>
-                  <span class={item.checked ? "checklist-done" : ""}>{item.label}</span>
+                  <span class={item.checked ? "checklist-done" : ""}>
+                    {item.label}
+                  </span>
                   {isAgent && (
-                    <button class="btn-icon danger" disabled={readOnly} onClick={() => deleteChecklistItem(item.id)}>
+                    <button
+                      class="btn-icon danger"
+                      disabled={readOnly}
+                      onClick={() => deleteChecklistItem(item.id)}
+                    >
                       <X size={12} />
                     </button>
                   )}
@@ -178,11 +292,17 @@ export function JobDetail() {
                 type="text"
                 disabled={readOnly}
                 value={checklistText}
-                onInput={(e) => setChecklistText((e.target as HTMLInputElement).value)}
+                onInput={(e) =>
+                  setChecklistText((e.target as HTMLInputElement).value)
+                }
                 placeholder="Add checklist item..."
                 onKeyDown={(e) => e.key === "Enter" && handleAddChecklist()}
               />
-              <button class="btn btn-sm" disabled={readOnly} onClick={handleAddChecklist}>
+              <button
+                class="btn btn-sm"
+                disabled={readOnly}
+                onClick={handleAddChecklist}
+              >
                 <Plus size={14} />
               </button>
             </div>
@@ -190,22 +310,43 @@ export function JobDetail() {
 
           {/* Materials Used */}
           <div class="detail-section">
-            <h3><Package size={16} style={{ verticalAlign: "text-bottom" }} /> Materials Used</h3>
+            <h3>
+              <Package size={16} style={{ verticalAlign: "text-bottom" }} />{" "}
+              Materials Used
+            </h3>
             {(job.job_materials || []).length > 0 && (
               <div class="table-scroll" style={{ marginBottom: 12 }}>
                 <table class="table">
                   <thead>
-                    <tr><th>Material</th><th>Qty</th><th>Unit Cost</th><th>Total</th>{isAgent && <th></th>}</tr>
+                    <tr>
+                      <th>Material</th>
+                      <th>Qty</th>
+                      <th>Unit Cost</th>
+                      <th>Total</th>
+                      {isAgent && <th></th>}
+                    </tr>
                   </thead>
                   <tbody>
                     {(job.job_materials || []).map((jm) => (
                       <tr key={jm.id} class="table-row">
                         <td>{jm.material_name || "—"}</td>
-                        <td>{jm.quantity} {jm.material_unit}</td>
-                        <td>${jm.unit_cost.toFixed(2)}</td>
-                        <td class="text-bold">${(jm.quantity * jm.unit_cost).toFixed(2)}</td>
+                        <td>
+                          {jm.quantity} {jm.material_unit}
+                        </td>
+                        <td>R {jm.unit_cost.toFixed(2)}</td>
+                        <td class="text-bold">
+                          R {(jm.quantity * jm.unit_cost).toFixed(2)}
+                        </td>
                         {isAgent && (
-                          <td><button class="btn-icon danger" disabled={readOnly} onClick={() => deleteJobMaterial(jm.id)}><Trash2 size={12} /></button></td>
+                          <td>
+                            <button
+                              class="btn-icon danger"
+                              disabled={readOnly}
+                              onClick={() => deleteJobMaterial(jm.id)}
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </td>
                         )}
                       </tr>
                     ))}
@@ -215,18 +356,52 @@ export function JobDetail() {
             )}
             {showAddMaterial ? (
               <div class="note-input-row">
-                <select disabled={readOnly} value={materialId} onChange={(e) => setMaterialId((e.target as HTMLSelectElement).value)} style={{ flex: 2 }}>
+                <select
+                  disabled={readOnly}
+                  value={materialId}
+                  onChange={(e) =>
+                    setMaterialId((e.target as HTMLSelectElement).value)
+                  }
+                  style={{ flex: 2 }}
+                >
                   <option value="">Select material...</option>
                   {materials.map((m) => (
-                    <option key={m.id} value={m.id}>{m.name} (${m.unit_cost}/{m.unit})</option>
+                    <option key={m.id} value={m.id}>
+                      {m.name} (R {m.unit_cost}/{m.unit})
+                    </option>
                   ))}
                 </select>
-                <input type="number" disabled={readOnly} value={materialQty} onInput={(e) => setMaterialQty((e.target as HTMLInputElement).value)} style={{ width: 70 }} min="0.1" step="0.1" />
-                <button class="btn btn-sm" disabled={readOnly} onClick={handleAddMaterial}>Add</button>
-                <button class="btn btn-sm" onClick={() => setShowAddMaterial(false)}>Cancel</button>
+                <input
+                  type="number"
+                  disabled={readOnly}
+                  value={materialQty}
+                  onInput={(e) =>
+                    setMaterialQty((e.target as HTMLInputElement).value)
+                  }
+                  style={{ width: 70 }}
+                  min="0.1"
+                  step="0.1"
+                />
+                <button
+                  class="btn btn-sm"
+                  disabled={readOnly}
+                  onClick={handleAddMaterial}
+                >
+                  Add
+                </button>
+                <button
+                  class="btn btn-sm"
+                  onClick={() => setShowAddMaterial(false)}
+                >
+                  Cancel
+                </button>
               </div>
             ) : (
-              <button class="btn btn-sm" disabled={readOnly} onClick={() => setShowAddMaterial(true)}>
+              <button
+                class="btn btn-sm"
+                disabled={readOnly}
+                onClick={() => setShowAddMaterial(true)}
+              >
                 <Plus size={14} /> Add Material
               </button>
             )}
@@ -240,11 +415,17 @@ export function JobDetail() {
                 type="text"
                 disabled={readOnly}
                 value={noteText}
-                onInput={(e) => setNoteText((e.target as HTMLInputElement).value)}
+                onInput={(e) =>
+                  setNoteText((e.target as HTMLInputElement).value)
+                }
                 placeholder="Add a note..."
                 onKeyDown={(e) => e.key === "Enter" && handleAddNote()}
               />
-              <button class="btn btn-sm" disabled={readOnly} onClick={handleAddNote}>
+              <button
+                class="btn btn-sm"
+                disabled={readOnly}
+                onClick={handleAddNote}
+              >
                 <Send size={14} />
               </button>
             </div>
@@ -255,7 +436,11 @@ export function JobDetail() {
                   <div class="note-meta">
                     <span>{new Date(note.created_at).toLocaleString()}</span>
                     {isAgent && (
-                      <button class="btn-icon danger" disabled={readOnly} onClick={() => deleteJobNote(note.id)}>
+                      <button
+                        class="btn-icon danger"
+                        disabled={readOnly}
+                        onClick={() => deleteJobNote(note.id)}
+                      >
                         <Trash2 size={12} />
                       </button>
                     )}
@@ -295,7 +480,9 @@ export function JobDetail() {
             >
               <option value="">Unassigned</option>
               {technicianLookup.map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
               ))}
             </select>
           </div>

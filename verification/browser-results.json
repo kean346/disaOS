@@ -1,0 +1,32 @@
+{
+  "passed": 16,
+  "checks": [
+    "Overview renders database metrics",
+    "Calendar rescheduling and crew assignment persist",
+    "Mobile checklist, note, compressed photo and permanent completion survive refresh",
+    "Linked invoice and recorded payment persist",
+    "Property history opens retained proof of service with photo and printable layout",
+    "Overview completion and recorded revenue update from records",
+    "Required-field error, dialog Escape and trigger focus restoration",
+    "Empty search and clear recovery",
+    "Overview narrow layout has no document overflow",
+    "Reduced motion respected",
+    "Global scrollbar tokens applied",
+    "Offline error and reconnect retry recover",
+    "Quotation builder, VAT total, stage confirmations and accepted-quote scheduling",
+    "Original client creation preserved with shared accessible dialog",
+    "All office and field routes render after shared-shell migration",
+    "No browser runtime errors"
+  ],
+  "errors": [],
+  "consoleErrors": [
+    {
+      "message": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+      "expected": true
+    },
+    {
+      "message": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+      "expected": true
+    }
+  ]
+}

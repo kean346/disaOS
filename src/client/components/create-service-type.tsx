@@ -1,3 +1,4 @@
+import { GardenDialog } from "../garden-ui";
 import { useState } from "preact/hooks";
 import { useApp } from "../context";
 import { X } from "lucide-preact";
@@ -14,7 +15,10 @@ export function CreateServiceType({ onClose }: { onClose: () => void }) {
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    if (!name.trim()) { setError("Name is required"); return; }
+    if (!name.trim()) {
+      setError("Name is required");
+      return;
+    }
     setSubmitting(true);
     try {
       await addServiceType({
@@ -33,43 +37,83 @@ export function CreateServiceType({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div class="modal-overlay" onClick={onClose}>
-      <div class="modal modal-sm" onClick={(e) => e.stopPropagation()}>
-        <div class="modal-header">
-          <h2>Add Service Type</h2>
-          <button class="btn-icon" onClick={onClose}><X size={18} /></button>
+    <GardenDialog title="Add garden service" onClose={onClose}>
+      <form noValidate onSubmit={handleSubmit}>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label htmlFor="create-service-type-field-1">Name *</label>
+            <input
+              id="create-service-type-field-1"
+              type="text"
+              value={name}
+              onInput={(e) => setName((e.target as HTMLInputElement).value)}
+              required
+              placeholder="e.g., Standard Service"
+            />
+          </div>
+          <div class="form-group full-width">
+            <label htmlFor="create-service-type-field-2">Description</label>
+            <textarea
+              id="create-service-type-field-2"
+              class="resize-none"
+              rows={2}
+              value={description}
+              onInput={(e) =>
+                setDescription((e.target as HTMLTextAreaElement).value)
+              }
+              placeholder="Brief description..."
+            />
+          </div>
+          <div class="form-group">
+            <label htmlFor="create-service-type-field-3">
+              Default Duration (min)
+            </label>
+            <input
+              id="create-service-type-field-3"
+              type="number"
+              value={defaultDuration}
+              onInput={(e) =>
+                setDefaultDuration(
+                  parseInt((e.target as HTMLInputElement).value, 10) || 0,
+                )
+              }
+            />
+          </div>
+          <div class="form-group">
+            <label htmlFor="create-service-type-field-4">
+              Default Price ($)
+            </label>
+            <input
+              id="create-service-type-field-4"
+              type="number"
+              step="0.01"
+              value={defaultPrice}
+              onInput={(e) =>
+                setDefaultPrice(
+                  parseFloat((e.target as HTMLInputElement).value) || 0,
+                )
+              }
+            />
+          </div>
+          <div class="form-group">
+            <label htmlFor="create-service-type-field-5">Color</label>
+            <input
+              id="create-service-type-field-5"
+              type="color"
+              value={color}
+              onChange={(e) => setColor((e.target as HTMLInputElement).value)}
+            />
+          </div>
         </div>
-        <form onSubmit={handleSubmit}>
-          <div class="form-grid">
-            <div class="form-group full-width">
-              <label>Name *</label>
-              <input type="text" value={name} onInput={(e) => setName((e.target as HTMLInputElement).value)} required placeholder="e.g., Standard Service" />
-            </div>
-            <div class="form-group full-width">
-              <label>Description</label>
-              <textarea rows={2} value={description} onInput={(e) => setDescription((e.target as HTMLTextAreaElement).value)} placeholder="Brief description..." />
-            </div>
-            <div class="form-group">
-              <label>Default Duration (min)</label>
-              <input type="number" value={defaultDuration} onInput={(e) => setDefaultDuration(parseInt((e.target as HTMLInputElement).value, 10) || 0)} />
-            </div>
-            <div class="form-group">
-              <label>Default Price ($)</label>
-              <input type="number" step="0.01" value={defaultPrice} onInput={(e) => setDefaultPrice(parseFloat((e.target as HTMLInputElement).value) || 0)} />
-            </div>
-            <div class="form-group">
-              <label>Color</label>
-              <input type="color" value={color} onChange={(e) => setColor((e.target as HTMLInputElement).value)} />
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn" onClick={onClose}>Cancel</button>
-            <button type="submit" class="btn btn-primary" disabled={submitting}>
-              {submitting ? "Adding..." : "Add Service Type"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" disabled={submitting}>
+            {submitting ? "Adding..." : "Add Service Type"}
+          </button>
+        </div>
+      </form>
+    </GardenDialog>
   );
 }

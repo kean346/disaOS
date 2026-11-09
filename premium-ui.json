@@ -1,0 +1,27 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": ["src/client"],
+  "locale": "en-ZA",
+  "canonicalMap": "UX-CONTRACT.md",
+  "requiredCapabilities": [
+    "Table Selection",
+    "Select/Listbox",
+    "Date",
+    "Form",
+    "Scrollbar",
+    "Toast",
+    "CRUD"
+  ],
+  "ownership": { "Select/Listbox": "native", "Date": "native" },
+  "requiredCommands": ["unit", "typecheck", "build", "browser"],
+  "commands": {
+    "unit": "node --test tests/*.test.mjs",
+    "typecheck": "node_modules/.bin/tsc --noEmit",
+    "build": "node_modules/.bin/vite build",
+    "browser": "node scripts/verify-garden-browser.cjs"
+  },
+  "evidence": {
+    "crudFullFlow": "tests/garden.test.mjs",
+    "failurePaths": "tests/garden.test.mjs"
+  }
+}

@@ -6,8 +6,14 @@ import { Plus, Search, Trash2 } from "lucide-preact";
 
 export function CustomerList() {
   const {
-    customers, customersPag, setCustomersPage, customersSearch, setCustomersSearch,
-    navigate, deleteCustomer, isAgent,
+    customers,
+    customersPag,
+    setCustomersPage,
+    customersSearch,
+    setCustomersSearch,
+    navigate,
+    deleteCustomer,
+    isAgent,
   } = useApp();
   const [showCreate, setShowCreate] = useState(false);
 
@@ -27,7 +33,9 @@ export function CustomerList() {
             type="text"
             placeholder="Search customers..."
             value={customersSearch}
-            onInput={(e) => setCustomersSearch((e.target as HTMLInputElement).value)}
+            onInput={(e) =>
+              setCustomersSearch((e.target as HTMLInputElement).value)
+            }
           />
         </div>
       </div>
@@ -35,8 +43,17 @@ export function CustomerList() {
       <div class="table-scroll">
         {customers.length === 0 ? (
           <div class="empty-state">
-            <p>{customersSearch ? "No customers match your search." : "Add a customer to start scheduling service."}</p>
-            <button class="btn" onClick={() => customersSearch ? setCustomersSearch("") : setShowCreate(true)}>
+            <p>
+              {customersSearch
+                ? "No customers match your search."
+                : "Add a customer to start scheduling service."}
+            </p>
+            <button
+              class="btn"
+              onClick={() =>
+                customersSearch ? setCustomersSearch("") : setShowCreate(true)
+              }
+            >
               {customersSearch ? "Clear search" : "Add your first customer"}
             </button>
           </div>
@@ -48,23 +65,36 @@ export function CustomerList() {
                 <th>Phone</th>
                 <th>Email</th>
                 <th>Address</th>
-                <th>Jobs</th>
+                <th>Garden visits</th>
                 {isAgent && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
               {customers.map((c) => (
-                <tr key={c.id} class="table-row clickable" onClick={() => navigate(`/customers/${c.id}`)}>
-                  <td class="text-bold">{c.name}</td>
+                <tr key={c.id} class="table-row">
+                  <td class="text-bold">
+                    <button
+                      class="record-link"
+                      onClick={() => navigate(`/customers/${c.id}`)}
+                    >
+                      {c.name}
+                    </button>
+                  </td>
                   <td class="text-muted">{c.phone || "—"}</td>
                   <td class="text-muted">{c.email || "—"}</td>
-                  <td class="text-muted">{[c.address, c.city, c.state].filter(Boolean).join(", ") || "—"}</td>
+                  <td class="text-muted">
+                    {[c.address, c.city, c.state].filter(Boolean).join(", ") ||
+                      "—"}
+                  </td>
                   <td>{c.job_count || 0}</td>
                   {isAgent && (
                     <td>
                       <button
                         class="btn-icon danger"
-                        onClick={(e) => { e.stopPropagation(); deleteCustomer(c.id); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteCustomer(c.id);
+                        }}
                       >
                         <Trash2 size={14} />
                       </button>

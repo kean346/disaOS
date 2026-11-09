@@ -1,3 +1,11 @@
+# Disa GardenOS
+
+Garden Operations. Simplified. An independent paceIT concept for Disa Tuine, extending this OpenFieldService codebase. See [development, migrations, verification and limitations](DEVELOPMENT.md).
+
+The original project documentation and MIT attribution are retained below.
+
+---
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="readme-banner-dark.png" />
   <img src="readme-banner.png" alt="OpenFieldService — weekly dispatch with a floating conceptual technician assignment panel" width="100%" />

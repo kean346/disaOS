@@ -3,6 +3,7 @@ import { App } from "./app";
 import { prepareOfflineSupport } from "./offline";
 import "./tokens.css";
 import "./styles.css";
+import "./garden.css";
 
 void prepareOfflineSupport();
 render(<App />, document.getElementById("app")!);

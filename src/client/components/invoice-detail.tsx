@@ -3,10 +3,21 @@ import { useApp } from "../context";
 import { ArrowLeft, Trash2 } from "lucide-preact";
 import type { InvoiceStatus } from "../types";
 
-const ALL_STATUSES: InvoiceStatus[] = ["draft", "sent", "paid", "overdue", "cancelled"];
+const ALL_STATUSES: InvoiceStatus[] = [
+  "draft",
+  "sent",
+  "paid",
+  "overdue",
+  "cancelled",
+];
 
 export function InvoiceDetail() {
-  const { selectedInvoice: invoice, navigate, updateInvoice, deleteInvoice } = useApp();
+  const {
+    selectedInvoice: invoice,
+    navigate,
+    updateInvoice,
+    deleteInvoice,
+  } = useApp();
 
   if (!invoice) return null;
 
@@ -17,7 +28,10 @@ export function InvoiceDetail() {
           <ArrowLeft size={16} /> Back
         </button>
         <div class="page-header-right">
-          <button class="btn btn-danger" onClick={() => deleteInvoice(invoice.id)}>
+          <button
+            class="btn btn-danger"
+            onClick={() => deleteInvoice(invoice.id)}
+          >
             <Trash2 size={14} /> Delete
           </button>
         </div>
@@ -59,32 +73,47 @@ export function InvoiceDetail() {
             <div class="table-scroll">
               <table class="table">
                 <thead>
-                  <tr><th>Description</th><th>Qty</th><th>Unit Price</th><th class="text-right">Total</th></tr>
+                  <tr>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th class="text-right">Total</th>
+                  </tr>
                 </thead>
                 <tbody>
                   {(invoice.lines || []).map((line) => (
                     <tr key={line.id} class="table-row">
                       <td>{line.description}</td>
                       <td>{line.quantity}</td>
-                      <td>${line.unit_price.toFixed(2)}</td>
-                      <td class="text-right">${line.total.toFixed(2)}</td>
+                      <td>R {line.unit_price.toFixed(2)}</td>
+                      <td class="text-right">R {line.total.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan={3} class="text-right text-muted">Subtotal</td>
-                    <td class="text-right">${invoice.subtotal.toFixed(2)}</td>
+                    <td colSpan={3} class="text-right text-muted">
+                      Subtotal
+                    </td>
+                    <td class="text-right">R {invoice.subtotal.toFixed(2)}</td>
                   </tr>
                   {invoice.tax_rate > 0 && (
                     <tr>
-                      <td colSpan={3} class="text-right text-muted">Tax ({invoice.tax_rate}%)</td>
-                      <td class="text-right">${invoice.tax_amount.toFixed(2)}</td>
+                      <td colSpan={3} class="text-right text-muted">
+                        Tax ({invoice.tax_rate}%)
+                      </td>
+                      <td class="text-right">
+                        R {invoice.tax_amount.toFixed(2)}
+                      </td>
                     </tr>
                   )}
                   <tr>
-                    <td colSpan={3} class="text-right text-bold">Total</td>
-                    <td class="text-right text-bold" style={{ fontSize: 16 }}>${invoice.total.toFixed(2)}</td>
+                    <td colSpan={3} class="text-right text-bold">
+                      Total
+                    </td>
+                    <td class="text-right text-bold" style={{ fontSize: 16 }}>
+                      R {invoice.total.toFixed(2)}
+                    </td>
                   </tr>
                 </tfoot>
               </table>
@@ -107,7 +136,14 @@ export function InvoiceDetail() {
                 <button
                   key={s}
                   class={`status-btn ${invoice.status === s ? "active" : ""}`}
-                  onClick={() => updateInvoice(invoice.id, { status: s, ...(s === "paid" ? { paid_date: new Date().toISOString().split("T")[0] } : {}) })}
+                  onClick={() =>
+                    updateInvoice(invoice.id, {
+                      status: s,
+                      ...(s === "paid"
+                        ? { paid_date: new Date().toISOString().split("T")[0] }
+                        : {}),
+                    })
+                  }
                 >
                   {s}
                 </button>
@@ -120,8 +156,18 @@ export function InvoiceDetail() {
             <input
               type="date"
               value={invoice.due_date}
-              onChange={(e) => updateInvoice(invoice.id, { due_date: (e.target as HTMLInputElement).value })}
-              style={{ width: "100%", padding: "6px 8px", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)", fontSize: 13 }}
+              onChange={(e) =>
+                updateInvoice(invoice.id, {
+                  due_date: (e.target as HTMLInputElement).value,
+                })
+              }
+              style={{
+                width: "100%",
+                padding: "6px 8px",
+                border: "1px solid var(--border)",
+                borderRadius: "var(--radius-sm)",
+                fontSize: 13,
+              }}
             />
           </div>
         </div>

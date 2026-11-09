@@ -258,3 +258,201 @@ WHEN (SELECT asset_id FROM jobs WHERE id = NEW.job_id) IS NOT NULL BEGIN
   INSERT INTO asset_history(asset_id, job_id, summary, details)
   SELECT asset_id, id, identifier || ' note added', NEW.content FROM jobs WHERE id = NEW.job_id;
 END;
+
+CREATE TABLE IF NOT EXISTS garden_properties (
+  id TEXT PRIMARY KEY NOT NULL DEFAULT (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))) CHECK(length(id) = 36 AND substr(id, 9, 1) = '-' AND substr(id, 14, 1) = '-' AND substr(id, 19, 1) = '-' AND substr(id, 24, 1) = '-' AND length(replace(id, '-', '')) = 32 AND lower(replace(id, '-', '')) NOT GLOB '*[^0-9a-f]*'),
+  customer_id TEXT NOT NULL REFERENCES customers(id) ON DELETE RESTRICT,
+  name TEXT NOT NULL,
+  suburb TEXT NOT NULL,
+  property_type TEXT NOT NULL DEFAULT 'Residential',
+  address TEXT NOT NULL DEFAULT '',
+  requirements TEXT NOT NULL DEFAULT '',
+  instructions TEXT NOT NULL DEFAULT '',
+  frequency TEXT NOT NULL DEFAULT 'weekly',
+  technician_id TEXT REFERENCES technicians(id) ON DELETE SET NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS garden_plans (
+  id TEXT PRIMARY KEY NOT NULL DEFAULT (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))) CHECK(length(id) = 36 AND substr(id, 9, 1) = '-' AND substr(id, 14, 1) = '-' AND substr(id, 19, 1) = '-' AND substr(id, 24, 1) = '-' AND length(replace(id, '-', '')) = 32 AND lower(replace(id, '-', '')) NOT GLOB '*[^0-9a-f]*'),
+  property_id TEXT NOT NULL REFERENCES garden_properties(id) ON DELETE RESTRICT,
+  frequency TEXT NOT NULL,
+  start_date TEXT NOT NULL,
+  occurrences INTEGER NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS garden_visits (
+  id TEXT PRIMARY KEY NOT NULL DEFAULT (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))) CHECK(length(id) = 36 AND substr(id, 9, 1) = '-' AND substr(id, 14, 1) = '-' AND substr(id, 19, 1) = '-' AND substr(id, 24, 1) = '-' AND length(replace(id, '-', '')) = 32 AND lower(replace(id, '-', '')) NOT GLOB '*[^0-9a-f]*'),
+  job_id TEXT NOT NULL UNIQUE REFERENCES jobs(id) ON DELETE CASCADE,
+  property_id TEXT NOT NULL REFERENCES garden_properties(id) ON DELETE RESTRICT,
+  plan_id TEXT REFERENCES garden_plans(id) ON DELETE RESTRICT,
+  occurrence_date TEXT NOT NULL,
+  quote_id TEXT UNIQUE,
+  UNIQUE(plan_id, occurrence_date)
+);
+
+CREATE TABLE IF NOT EXISTS garden_photos (
+  id TEXT PRIMARY KEY NOT NULL DEFAULT (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))) CHECK(length(id) = 36 AND substr(id, 9, 1) = '-' AND substr(id, 14, 1) = '-' AND substr(id, 19, 1) = '-' AND substr(id, 24, 1) = '-' AND length(replace(id, '-', '')) = 32 AND lower(replace(id, '-', '')) NOT GLOB '*[^0-9a-f]*'),
+  job_id TEXT NOT NULL REFERENCES jobs(id) ON DELETE RESTRICT,
+  name TEXT NOT NULL,
+  data TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS garden_records (
+  id TEXT PRIMARY KEY NOT NULL DEFAULT (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))) CHECK(length(id) = 36 AND substr(id, 9, 1) = '-' AND substr(id, 14, 1) = '-' AND substr(id, 19, 1) = '-' AND substr(id, 24, 1) = '-' AND length(replace(id, '-', '')) = 32 AND lower(replace(id, '-', '')) NOT GLOB '*[^0-9a-f]*'),
+  job_id TEXT NOT NULL UNIQUE,
+  property_id TEXT NOT NULL,
+  snapshot TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS garden_quotes (
+  id TEXT PRIMARY KEY NOT NULL DEFAULT (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))) CHECK(length(id) = 36 AND substr(id, 9, 1) = '-' AND substr(id, 14, 1) = '-' AND substr(id, 19, 1) = '-' AND substr(id, 24, 1) = '-' AND length(replace(id, '-', '')) = 32 AND lower(replace(id, '-', '')) NOT GLOB '*[^0-9a-f]*'),
+  customer_id TEXT NOT NULL REFERENCES customers(id) ON DELETE RESTRICT,
+  property_id TEXT NOT NULL REFERENCES garden_properties(id) ON DELETE RESTRICT,
+  requested_service TEXT NOT NULL DEFAULT '',
+  consultation_status TEXT NOT NULL DEFAULT 'Enquiry',
+  follow_up TEXT NOT NULL DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'enquiry' CHECK(status IN ('enquiry','prepared','sent','accepted','declined')),
+  lines_json TEXT NOT NULL DEFAULT '[]',
+  discount_cents INTEGER NOT NULL DEFAULT 0,
+  subtotal_cents INTEGER NOT NULL DEFAULT 0,
+  tax_rate REAL NOT NULL DEFAULT 0,
+  tax_cents INTEGER NOT NULL DEFAULT 0,
+  total_cents INTEGER NOT NULL DEFAULT 0,
+  notes TEXT NOT NULL DEFAULT '',
+  valid_until TEXT NOT NULL DEFAULT '',
+  job_id TEXT UNIQUE REFERENCES jobs(id) ON DELETE RESTRICT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS garden_payments (
+  id TEXT PRIMARY KEY NOT NULL DEFAULT (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))) CHECK(length(id) = 36 AND substr(id, 9, 1) = '-' AND substr(id, 14, 1) = '-' AND substr(id, 19, 1) = '-' AND substr(id, 24, 1) = '-' AND length(replace(id, '-', '')) = 32 AND lower(replace(id, '-', '')) NOT GLOB '*[^0-9a-f]*'),
+  invoice_id TEXT NOT NULL REFERENCES invoices(id) ON DELETE RESTRICT,
+  amount_cents INTEGER NOT NULL CHECK(amount_cents > 0),
+  reference TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS garden_demo_members (
+  id TEXT PRIMARY KEY NOT NULL DEFAULT (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))) CHECK(length(id) = 36 AND substr(id, 9, 1) = '-' AND substr(id, 14, 1) = '-' AND substr(id, 19, 1) = '-' AND substr(id, 24, 1) = '-' AND length(replace(id, '-', '')) = 32 AND lower(replace(id, '-', '')) NOT GLOB '*[^0-9a-f]*'),
+  entity TEXT NOT NULL,
+  record_id TEXT NOT NULL,
+  UNIQUE(entity, record_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_garden_visits_property ON garden_visits(property_id);
+CREATE INDEX IF NOT EXISTS idx_garden_payments_invoice ON garden_payments(invoice_id);
+DROP TRIGGER IF EXISTS garden_completion;
+CREATE TRIGGER IF NOT EXISTS garden_completion AFTER UPDATE OF status ON jobs
+WHEN NEW.status = 'completed' AND OLD.status != 'completed' AND EXISTS (SELECT 1 FROM garden_visits WHERE job_id = NEW.id) BEGIN
+  INSERT OR IGNORE INTO garden_records(job_id,property_id,snapshot)
+  SELECT NEW.id,v.property_id,json_object('identifier',NEW.identifier,'customer',c.name,'property',p.name,'suburb',p.suburb,'crew',t.name,'date',NEW.scheduled_date,'notes',NEW.completion_notes,'status',NEW.status,
+  'activity',json((SELECT json_group_array(json_object('content',content,'created_at',created_at)) FROM job_notes WHERE job_id=NEW.id)),
+  'tasks',json((SELECT json_group_array(json_object('label',label,'checked',checked)) FROM job_checklist WHERE job_id=NEW.id)),
+  'photos',json((SELECT json_group_array(json_object('name',name,'data',data)) FROM garden_photos WHERE job_id=NEW.id)))
+  FROM garden_visits v JOIN garden_properties p ON p.id=v.property_id JOIN customers c ON c.id=p.customer_id LEFT JOIN technicians t ON t.id=NEW.technician_id WHERE v.job_id=NEW.id;
+END;
+CREATE TRIGGER IF NOT EXISTS garden_completed_retained BEFORE DELETE ON jobs
+WHEN EXISTS(SELECT 1 FROM garden_records WHERE job_id=OLD.id) BEGIN SELECT RAISE(ABORT,'Completed garden visits are retained'); END;
+CREATE TRIGGER IF NOT EXISTS garden_payment_limit BEFORE INSERT ON garden_payments
+WHEN NEW.amount_cents + COALESCE((SELECT SUM(amount_cents) FROM garden_payments WHERE invoice_id=NEW.invoice_id),0) > (SELECT round(total*100) FROM invoices WHERE id=NEW.invoice_id)
+OR (SELECT status FROM invoices WHERE id=NEW.invoice_id) = 'cancelled'
+BEGIN SELECT RAISE(ABORT,'Payment exceeds outstanding balance or invoice is cancelled'); END;
+CREATE TRIGGER IF NOT EXISTS garden_payment_status AFTER INSERT ON garden_payments BEGIN
+ UPDATE invoices SET status=CASE WHEN (SELECT SUM(amount_cents) FROM garden_payments WHERE invoice_id=NEW.invoice_id)>=round(total*100) THEN 'paid' ELSE 'sent' END,
+ paid_date=CASE WHEN (SELECT SUM(amount_cents) FROM garden_payments WHERE invoice_id=NEW.invoice_id)>=round(total*100) THEN date('now') ELSE '' END, updated_at=datetime('now') WHERE id=NEW.invoice_id;
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_customers AFTER INSERT ON customers WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('customers',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_technicians AFTER INSERT ON technicians WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('technicians',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_service_types AFTER INSERT ON service_types WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('service_types',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_jobs AFTER INSERT ON jobs WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('jobs',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_job_notes AFTER INSERT ON job_notes WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('job_notes',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_job_checklist AFTER INSERT ON job_checklist WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('job_checklist',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_materials AFTER INSERT ON materials WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('materials',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_job_materials AFTER INSERT ON job_materials WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('job_materials',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_invoices AFTER INSERT ON invoices WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('invoices',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_invoice_lines AFTER INSERT ON invoice_lines WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('invoice_lines',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_garden_properties AFTER INSERT ON garden_properties WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('garden_properties',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_garden_plans AFTER INSERT ON garden_plans WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('garden_plans',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_garden_visits AFTER INSERT ON garden_visits WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('garden_visits',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_garden_photos AFTER INSERT ON garden_photos WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('garden_photos',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_garden_records AFTER INSERT ON garden_records WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('garden_records',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_garden_quotes AFTER INSERT ON garden_quotes WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('garden_quotes',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_demo_garden_payments AFTER INSERT ON garden_payments WHEN EXISTS(SELECT 1 FROM _meta WHERE key='garden_demo') BEGIN
+ INSERT OR IGNORE INTO garden_demo_members(entity,record_id) VALUES('garden_payments',NEW.id);
+END;
+
+CREATE TRIGGER IF NOT EXISTS garden_insert_conflict BEFORE INSERT ON garden_visits
+WHEN EXISTS (
+ SELECT 1 FROM jobs j JOIN jobs other ON other.id!=j.id AND other.technician_id=j.technician_id AND other.scheduled_date=j.scheduled_date
+ WHERE j.id=NEW.job_id AND j.technician_id IS NOT NULL AND j.status NOT IN ('completed','cancelled') AND other.status NOT IN ('completed','cancelled')
+ AND (CAST(substr(j.scheduled_time,1,2) AS INTEGER)*60+CAST(substr(j.scheduled_time,4,2) AS INTEGER)) < (CAST(substr(other.scheduled_time,1,2) AS INTEGER)*60+CAST(substr(other.scheduled_time,4,2) AS INTEGER)+other.duration)
+ AND (CAST(substr(j.scheduled_time,1,2) AS INTEGER)*60+CAST(substr(j.scheduled_time,4,2) AS INTEGER)+j.duration) > (CAST(substr(other.scheduled_time,1,2) AS INTEGER)*60+CAST(substr(other.scheduled_time,4,2) AS INTEGER))
+) BEGIN SELECT RAISE(ABORT,'Garden crew scheduling constraint conflict'); END;
+CREATE TRIGGER IF NOT EXISTS garden_update_conflict BEFORE UPDATE OF scheduled_date,scheduled_time,technician_id,duration,status ON jobs
+WHEN EXISTS(SELECT 1 FROM garden_visits WHERE job_id=NEW.id) AND NEW.technician_id IS NOT NULL AND NEW.status NOT IN ('completed','cancelled') AND EXISTS (
+ SELECT 1 FROM jobs other WHERE other.id!=NEW.id AND other.technician_id=NEW.technician_id AND other.scheduled_date=NEW.scheduled_date AND other.status NOT IN ('completed','cancelled')
+ AND (CAST(substr(NEW.scheduled_time,1,2) AS INTEGER)*60+CAST(substr(NEW.scheduled_time,4,2) AS INTEGER)) < (CAST(substr(other.scheduled_time,1,2) AS INTEGER)*60+CAST(substr(other.scheduled_time,4,2) AS INTEGER)+other.duration)
+ AND (CAST(substr(NEW.scheduled_time,1,2) AS INTEGER)*60+CAST(substr(NEW.scheduled_time,4,2) AS INTEGER)+NEW.duration) > (CAST(substr(other.scheduled_time,1,2) AS INTEGER)*60+CAST(substr(other.scheduled_time,4,2) AS INTEGER))
+) BEGIN SELECT RAISE(ABORT,'Garden crew scheduling constraint conflict'); END;
+CREATE TRIGGER IF NOT EXISTS garden_invoice_unique BEFORE INSERT ON invoices
+WHEN NEW.job_id IS NOT NULL AND EXISTS(SELECT 1 FROM garden_visits WHERE job_id=NEW.job_id) AND EXISTS(SELECT 1 FROM invoices WHERE job_id=NEW.job_id AND status!='cancelled')
+BEGIN SELECT RAISE(ABORT,'Garden visit already has an invoice'); END;
+
+CREATE TABLE IF NOT EXISTS garden_requests (
+  id TEXT PRIMARY KEY NOT NULL DEFAULT (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))) CHECK(length(id) = 36 AND substr(id, 9, 1) = '-' AND substr(id, 14, 1) = '-' AND substr(id, 19, 1) = '-' AND substr(id, 24, 1) = '-' AND length(replace(id, '-', '')) = 32 AND lower(replace(id, '-', '')) NOT GLOB '*[^0-9a-f]*'),
+  body_json TEXT NOT NULL,
+  result_json TEXT NOT NULL
+);
