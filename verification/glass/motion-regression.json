@@ -1,0 +1,30 @@
+[
+  {
+    "reducedMotion": "no-preference",
+    "samples": [
+      "0",
+      "2",
+      "8",
+      "19",
+      "26",
+      "30",
+      "30"
+    ],
+    "restored": "0",
+    "errors": []
+  },
+  {
+    "reducedMotion": "reduce",
+    "samples": [
+      "0",
+      "19",
+      "30",
+      "30",
+      "30",
+      "30",
+      "30"
+    ],
+    "restored": "1",
+    "errors": []
+  }
+]
