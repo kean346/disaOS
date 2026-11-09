@@ -10,3 +10,5 @@
 Actual count-up correction: Chromium sampled the overview visit KPI at 0, 23 and final 30, with no runtime errors. Reports restarted at zero on navigation; a reduced-motion reload immediately displayed final 30. Typecheck and production build passed. Chart bars and completion ring share the same visibility-aware interpolation hook as the counters.
 
 Animation visibility fix: zero-height bars now observe their visible chart container. Chromium recorded the count sequence 0 → 5 → 16 → 29 → 30 and a chart bar growing from height 0% to 100%. Reduced-motion default immediately shows 30; explicitly choosing Replay animations restarts at 0 and reaches 30. Animation duration is 2.2 seconds, with no artificial data delay. Build/typecheck passed.
+
+Live-site polish: removed the temporary replay button and its session override. Tested the built production assets through Vite preview: automatic count 0 → 13 → 30, graph height 0% → 100%, automatic route remount starts at 0, zero replay buttons and zero runtime errors. TypeScript and build passed. This is production-artifact verification, not independent verification of a hosted deployment URL.
